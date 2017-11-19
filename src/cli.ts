@@ -1,4 +1,8 @@
+#!/usr/bin/env node
+
 import { collect, Help, Program } from 'jargs';
+
+const PROGRAM_NAME = 'react-auto-intl';
 
 collect(
   Help(
@@ -8,7 +12,14 @@ collect(
       description: 'Display help and usage info',
     },
     Program(
-      'react-auto-intl'
+      PROGRAM_NAME,
+      {
+        description: 'Automated internationalization for React applications',
+        usage: `${PROGRAM_NAME} [options]`,
+        examples: [
+          `${PROGRAM_NAME} src/**/*.js`,
+        ],
+      }
     )
   )
 );
