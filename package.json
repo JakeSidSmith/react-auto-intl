@@ -2,9 +2,9 @@
   "name": "react-auto-intl",
   "version": "0.0.0",
   "description": "Automated internationalization for React applications",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": "dist/cli.js",
+  "main": "dist/module/index.js",
+  "types": "dist/module/index.d.ts",
+  "bin": "dist/cli/index.js",
   "scripts": {
     "prepublish": "npm run test && ./scripts/dist",
     "dist": "./scripts/dist",

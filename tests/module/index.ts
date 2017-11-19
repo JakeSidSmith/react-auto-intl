@@ -1,4 +1,4 @@
-import helloWorld from '../src/';
+import helloWorld from '../../src/module';
 
 describe('index.ts', () => {
 
