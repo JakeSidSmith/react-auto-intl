@@ -54,24 +54,32 @@ const traverseSources = (sources: Sources) => {
 //   // Does nothing yet
 // };
 
+const findTsTarget = () => {
+  const tsConfigLocation = ts.findConfigFile(CWD, ts.sys.fileExists);
+
+  const { config: { compilerOptions: { target = ts.ScriptTarget.Latest } }, error } = tsConfigLocation ?
+    ts.readConfigFile(tsConfigLocation, ts.sys.readFile) : ({} as any);
+
+  if (typeof target === 'string' && !(target in ts.ScriptTarget)) {
+    console.error(`Invalid target in tsconfig: ${target}`); // tslint:disable-line:no-console
+  }
+
+  if (error) {
+    console.error(error); // tslint:disable-line:no-console
+    process.exit(1);
+  } else {
+    tsTarget = typeof target === 'string' &&
+      ts.ScriptTarget[target.replace(MATCHES_ES, 'ES') as keyof typeof ts.ScriptTarget] ||
+      ts.ScriptTarget.Latest;
+  }
+};
+
 const parse = (tree: Tree) => {
   const { pattern = DEFAULT_PATTERN } = tree.args;
 
   getFilePaths(pattern, (paths) => {
     if (some(paths, MATCH_TS_EXTENSION)) {
-      const tsConfigLocation = ts.findConfigFile(CWD, ts.sys.fileExists);
-
-      const { config: { compilerOptions: { target = ts.ScriptTarget.Latest } }, error } = tsConfigLocation ?
-        ts.readConfigFile(tsConfigLocation, ts.sys.readFile) : ({} as any);
-
-      if (error) {
-        console.error(error); // tslint:disable-line:no-console
-        process.exit(1);
-      } else {
-        tsTarget = typeof target === 'string' &&
-          ts.ScriptTarget[target.replace(MATCHES_ES, 'ES') as keyof typeof ts.ScriptTarget] ||
-          ts.ScriptTarget.Latest;
-      }
+      findTsTarget();
     }
     getSources(paths, traverseSources);
   });
