@@ -8,6 +8,7 @@ interface State {
   value: boolean;
   placeholder: string;
   lookupValue: keyof typeof LOOKUP_TABLE;
+  defaultValue?: string;
 }
 
 export default class App extends React.Component<{}, State> {
@@ -18,11 +19,12 @@ export default class App extends React.Component<{}, State> {
       value: true,
       placeholder: 'Placeholder',
       lookupValue: 'b',
+      defaultValue: undefined,
     };
   }
 
   public render () {
-    const { value, placeholder, lookupValue } = this.state;
+    const { value, placeholder, lookupValue, defaultValue = 'Default' } = this.state;
 
     return (
       <div>
@@ -36,6 +38,7 @@ export default class App extends React.Component<{}, State> {
         Text with a {VARIABLE} in the middle.
         {this.getValueText()}
         {LOOKUP_TABLE[lookupValue]}
+        {defaultValue}
       </div>
     );
   }
