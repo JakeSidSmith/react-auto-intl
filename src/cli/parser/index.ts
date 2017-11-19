@@ -68,8 +68,8 @@ const parse = (tree: Tree) => {
         console.error(error); // tslint:disable-line:no-console
         process.exit(1);
       } else {
-        tsTarget = typeof target === 'string' ?
-          ts.ScriptTarget[target.replace(MATCHES_ES, 'ES') as keyof typeof ts.ScriptTarget] :
+        tsTarget = typeof target === 'string' &&
+          ts.ScriptTarget[target.replace(MATCHES_ES, 'ES') as keyof typeof ts.ScriptTarget] ||
           ts.ScriptTarget.Latest;
       }
     }
