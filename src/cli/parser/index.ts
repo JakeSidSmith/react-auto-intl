@@ -78,6 +78,12 @@ const parse = (tree: Tree) => {
   const { pattern = DEFAULT_PATTERN } = tree.args;
 
   getFilePaths(pattern, (paths) => {
+    if (!paths.length) {
+      console.error('No matching files'); // tslint:disable-line:no-console
+    } else {
+      console.error(`Matching files:\n  ${paths.join('\n  ')}`); // tslint:disable-line:no-console
+    }
+
     if (some(paths, MATCH_TS_EXTENSION)) {
       findTsTarget();
     }
