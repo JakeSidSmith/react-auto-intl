@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "description": "Automated internationalization for React applications",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": "dist/cli.js",
   "scripts": {
     "prepublish": "npm run test && ./scripts/dist",
     "dist": "./scripts/dist",
