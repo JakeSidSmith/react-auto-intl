@@ -60,7 +60,7 @@ const findTsTarget = () => {
   const { config: { compilerOptions: { target = ts.ScriptTarget.Latest } }, error } = tsConfigLocation ?
     ts.readConfigFile(tsConfigLocation, ts.sys.readFile) : ({} as any);
 
-  if (typeof target === 'string' && !(target in ts.ScriptTarget)) {
+  if (typeof target === 'string' && !(target.replace(MATCHES_ES, 'ES') in ts.ScriptTarget)) {
     console.error(`Invalid target in tsconfig: ${target}`); // tslint:disable-line:no-console
   }
 
