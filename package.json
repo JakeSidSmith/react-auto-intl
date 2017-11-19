@@ -8,7 +8,7 @@
   "scripts": {
     "prepublish": "npm run test && ./scripts/dist",
     "dist": "./scripts/dist",
-    "lint": "tslint --project tsconfig.json '@(src|tests|types|docs)/**/*.@(ts|tsx)'",
+    "lint": "tslint --project tsconfig.json '@(src|tests|types|docs|test-files)/**/*.@(ts|tsx)'",
     "tests": "jest",
     "test": "npm run lint && npm run tests -- --coverage --runInBand"
   },
