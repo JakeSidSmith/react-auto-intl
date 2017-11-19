@@ -8,12 +8,10 @@ import {
   GLOB_OPTIONS,
   MATCH_TS_EXTENSION,
 } from './constants';
+import { traverseSources } from './traverse';
+import { GetFilePathsCallback, GetSourcesCallback, Sources } from './types';
 
 let tsConfig: any;
-
-interface Sources {[i: string]: string}
-type GetFilePathsCallback = (paths: string[]) => void;
-type GetSourcesCallback = (sources: Sources) => void;
 
 const getFilePaths = (pattern: string, callback: GetFilePathsCallback) => {
   glob(pattern, GLOB_OPTIONS, (error: Error | null, paths: string[]) => {
@@ -29,8 +27,6 @@ const getSources = (paths: string[], callback: GetSourcesCallback) => {
 
     if (source) {
       if (MATCH_TS_EXTENSION.test(path)) {
-        console.log(tsConfig);
-
         sources[path] = ts.transpileModule(source, tsConfig).outputText;
       } else {
         sources[path] = source;
@@ -43,20 +39,6 @@ const getSources = (paths: string[], callback: GetSourcesCallback) => {
 
   });
 };
-
-const traverseSources = (sources: Sources) => {
-  // console.log(sources);
-
-  // for (const path in sources) {
-  //   if (sources.hasOwnProperty(path)) {
-  //     const source = sources[path];
-  //   }
-  // }
-};
-
-// const traverse = () => {
-//   // Does nothing yet
-// };
 
 const findTsConfig = () => {
   const tsConfigLocation = ts.findConfigFile(CWD, ts.sys.fileExists);
@@ -88,7 +70,7 @@ const findTsConfig = () => {
   }
 };
 
-const parse = (tree: Tree) => {
+export const parse = (tree: Tree) => {
   const { pattern = DEFAULT_PATTERN } = tree.args;
 
   getFilePaths(pattern, (paths) => {
@@ -105,5 +87,3 @@ const parse = (tree: Tree) => {
     getSources(paths, traverseSources);
   });
 };
-
-export default parse;

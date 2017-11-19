@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Arg, collect, Help, Program } from 'jargs';
-import parse from './parser';
+import { parse } from './parser';
 
 const PROGRAM_NAME = 'react-auto-intl';
 
