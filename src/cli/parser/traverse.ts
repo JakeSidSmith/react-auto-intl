@@ -4,7 +4,7 @@ import { Sources } from './types';
 
 const traverse = (scope: {[i: string]: any}, path: string, source: string) => {
   walk.fullAncestor(acorn.parse(source), (node: acorn.Token) => {
-    console.log(`There's a ${node.type} node at ${node.start}`);
+    console.log(`There's a ${node.type} node at ${node.start}\n\n`, node, '\n\n');
   });
 };
 
