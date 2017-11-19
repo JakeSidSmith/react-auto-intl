@@ -4,7 +4,7 @@ import { Tree } from 'jargs';
 import { some } from 'lodash';
 import * as ts from 'typescript';
 
-let tsTarget: number;
+let tsTarget: ts.ScriptTarget;
 
 const MATCH_TS_EXTENSION = /\.tsx?$/i;
 const MATCHES_ES = /^es/i;
