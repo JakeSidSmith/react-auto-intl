@@ -8,6 +8,8 @@
   "scripts": {
     "prepublish": "npm run test && ./scripts/dist",
     "dist": "./scripts/dist",
+    "ts-node": "ts-node",
+    "test-cli": "npm run ts-node -- src/cli/index.ts",
     "lint": "tslint --project tsconfig.json '@(src|tests|types|docs|test-files)/**/*.@(ts|tsx)'",
     "tests": "jest",
     "test": "npm run lint && npm run tests -- --coverage --runInBand"
@@ -45,6 +47,7 @@
     "react": "16.1.1",
     "react-dom": "16.1.1",
     "ts-jest": "20.0.14",
+    "ts-node": "3.3.0",
     "tslint": "5.8.0",
     "tslint-eslint-rules": "4.1.1",
     "tslint-react": "3.2.0"
