@@ -2,38 +2,14 @@ import * as glob from 'glob';
 import { Tree } from 'jargs';
 import { some } from 'lodash';
 import * as ts from 'typescript';
+import {
+  CWD,
+  DEFAULT_PATTERN,
+  GLOB_OPTIONS,
+  MATCH_TS_EXTENSION,
+} from './constants';
 
-let tsTarget: ts.ScriptTarget;
-let tsModule: ts.ModuleKind;
-
-const MATCH_TS_EXTENSION = /\.tsx?$/i;
-
-const CWD = process.cwd();
-const DEFAULT_PATTERN = '**/*.@(js|jsx|ts|tsx)';
-
-const GLOB_OPTIONS = {
-  absolute: true,
-};
-
-const MODULE_MAPPING: {[i: string]: keyof typeof ts.ModuleKind} = {
-  none: 'None',
-  commonjs: 'CommonJS',
-  amd: 'AMD',
-  umd: 'UMD',
-  system: 'System',
-  es2015: 'ES2015',
-  esnext: 'ESNext',
-};
-
-const SCRIPT_MAPPING: {[i: string]: keyof typeof ts.ScriptTarget} = {
-  es3: 'ES3',
-  es5: 'ES5',
-  es2015: 'ES2015',
-  es2016: 'ES2016',
-  es2017: 'ES2017',
-  esnext: 'ESNext',
-  latest: 'Latest',
-};
+let tsConfig: any;
 
 interface Sources {[i: string]: string}
 type GetFilePathsCallback = (paths: string[]) => void;
@@ -53,15 +29,9 @@ const getSources = (paths: string[], callback: GetSourcesCallback) => {
 
     if (source) {
       if (MATCH_TS_EXTENSION.test(path)) {
-        sources[path] = ts.transpileModule(
-          source,
-          {
-            compilerOptions: {
-              module: tsModule,
-              target: tsTarget,
-            },
-          }
-        ).outputText;
+        console.log(tsConfig);
+
+        sources[path] = ts.transpileModule(source, tsConfig).outputText;
       } else {
         sources[path] = source;
       }
@@ -75,6 +45,8 @@ const getSources = (paths: string[], callback: GetSourcesCallback) => {
 };
 
 const traverseSources = (sources: Sources) => {
+  // console.log(sources);
+
   // for (const path in sources) {
   //   if (sources.hasOwnProperty(path)) {
   //     const source = sources[path];
@@ -86,39 +58,33 @@ const traverseSources = (sources: Sources) => {
 //   // Does nothing yet
 // };
 
-const findTsTarget = () => {
+const findTsConfig = () => {
   const tsConfigLocation = ts.findConfigFile(CWD, ts.sys.fileExists);
 
   const {
+    config,
     config: {
+      compilerOptions,
       compilerOptions: {
-        target: configTarget = ts.ScriptTarget.Latest,
-        module: configModule = ts.ModuleKind.CommonJS,
+        target: tsTarget = ts.ScriptTarget.Latest,
+        module: tsModule = ts.ModuleKind.CommonJS,
       },
     },
     error,
-  } = tsConfigLocation ?
-    ts.readConfigFile(tsConfigLocation, ts.sys.readFile) : ({} as any);
-
-  if (typeof configTarget === 'string' && !(configTarget.toLowerCase() in SCRIPT_MAPPING)) {
-    console.error(`Invalid target in tsconfig: ${configTarget}`); // tslint:disable-line:no-console
-  }
-
-  if (typeof configModule === 'string' && !(configModule.toLowerCase() in MODULE_MAPPING)) {
-    console.error(`Invalid module in tsconfig: ${configModule}`); // tslint:disable-line:no-console
-  }
+  } = tsConfigLocation ? ts.readConfigFile(tsConfigLocation, ts.sys.readFile) : ({} as any);
 
   if (error) {
     console.error(error); // tslint:disable-line:no-console
     process.exit(1);
   } else {
-    tsTarget = typeof configTarget === 'string' &&
-      ts.ScriptTarget[SCRIPT_MAPPING[configTarget.toLowerCase()]] ||
-      ts.ScriptTarget.Latest;
-
-    tsModule = typeof configModule === 'string' &&
-      ts.ModuleKind[MODULE_MAPPING[configModule.toLowerCase()]] ||
-      ts.ModuleKind.CommonJS;
+    tsConfig = {
+      ...config,
+      compilerOptions: {
+        ...compilerOptions,
+        target: tsTarget,
+        module: tsModule,
+      },
+    };
   }
 };
 
@@ -133,7 +99,7 @@ const parse = (tree: Tree) => {
     }
 
     if (some(paths, MATCH_TS_EXTENSION)) {
-      findTsTarget();
+      findTsConfig();
     }
 
     getSources(paths, traverseSources);
