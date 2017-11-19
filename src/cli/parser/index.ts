@@ -59,10 +59,10 @@ const parse = (tree: Tree) => {
 
   getFilePaths(pattern, (paths) => {
     if (some(paths, MATCH_TS_EXTENSION)) {
-      const tsconfigLocation = ts.findConfigFile(CWD, ts.sys.fileExists);
+      const tsConfigLocation = ts.findConfigFile(CWD, ts.sys.fileExists);
 
-      const { config: { compilerOptions: { target = ts.ScriptTarget.Latest } }, error } = tsconfigLocation ?
-        ts.readConfigFile(tsconfigLocation, ts.sys.readFile) : ({} as any);
+      const { config: { compilerOptions: { target = ts.ScriptTarget.Latest } }, error } = tsConfigLocation ?
+        ts.readConfigFile(tsConfigLocation, ts.sys.readFile) : ({} as any);
 
       if (error) {
         console.error(error); // tslint:disable-line:no-console
