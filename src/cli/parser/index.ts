@@ -1,11 +1,12 @@
 import { readFile } from 'fs';
 import * as glob from 'glob';
 import { Tree } from 'jargs';
+import { some } from 'lodash';
 import * as ts from 'typescript';
-import { log } from 'util';
 
 let tsTarget: number;
 
+const MATCH_TS_EXTENSION = /\.tsx?$/i;
 const MATCHES_ES = /^es/i;
 
 const CWD = process.cwd();
@@ -15,12 +16,6 @@ const DEFAULT_PATTERN = '**/*.@(js|jsx|ts|tsx)';
 const GLOB_OPTIONS = {
   absolute: true,
 };
-
-interface TSConfig {
-  compilerOptions: {
-    target: string;
-  };
-}
 
 interface Sources {[i: string]: string}
 type GetFilePathsCallback = (paths: string[]) => void;
@@ -55,24 +50,22 @@ const traverseSources = (sources: Sources) => {
   }
 };
 
-const traverse = () => {
-  console.log('Nope');
-};
+// const traverse = () => {
+//   // Does nothing yet
+// };
 
 const parse = (tree: Tree) => {
   const { pattern = DEFAULT_PATTERN } = tree.args;
 
   getFilePaths(pattern, (paths) => {
-    const anyFilesAreTS = true;
-
-    if (anyFilesAreTS) {
+    if (some(paths, MATCH_TS_EXTENSION)) {
       const tsconfigLocation = ts.findConfigFile(CWD, ts.sys.fileExists);
 
       const { config: { compilerOptions: { target = ts.ScriptTarget.Latest } }, error } = tsconfigLocation ?
         ts.readConfigFile(tsconfigLocation, ts.sys.readFile) : ({} as any);
 
       if (error) {
-        console.error(error);
+        console.error(error); // tslint:disable-line:no-console
         process.exit(1);
       } else {
         tsTarget = typeof target === 'string' ?
