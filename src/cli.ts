@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { collect, Help, Program } from 'jargs';
 
 collect(
