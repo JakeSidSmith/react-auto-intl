@@ -31,7 +31,7 @@ const matchesNode = <T extends acorn.Node | acorn.SubNode>(node: T, match: Parti
 };
 
 export const traverse = (options: Options, source: string) => {
-  const { path } = options;
+  const { main } = options;
 
   walk.fullAncestor(acorn.parse(source), (node, base, state) => {
     if (matchesNode(node, ReactCreateElement)) {
