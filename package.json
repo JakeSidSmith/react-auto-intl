@@ -33,7 +33,6 @@
   },
   "homepage": "https://github.com/jakesidsmith/react-auto-intl#readme",
   "dependencies": {
-    "@types/acorn": "4.0.3",
     "@types/glob": "5.0.33",
     "@types/lodash": "4.14.85",
     "@types/node": "8.0.53",
