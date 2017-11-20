@@ -1,11 +1,7 @@
 import * as acorn from 'acorn';
 import * as walk from 'acorn/dist/walk';
 import { every } from 'lodash';
-import { Sources } from './types';
-
-interface StringKeyedObject {
-  [i: string]: any;
-}
+import { Options } from './types';
 
 type DeepPartial<T extends {[i: string]: any}> = Partial<{[P in keyof T]: DeepPartial<T[P]>}>;
 
@@ -34,22 +30,13 @@ const matchesNode = <T extends acorn.Node | acorn.SubNode>(node: T, match: Parti
   });
 };
 
-const traverse = (scope: StringKeyedObject, path: string, source: string) => {
-  walk.fullAncestor(acorn.parse(source), (node) => {
+export const traverse = (options: Options, source: string) => {
+  const { path } = options;
+
+  walk.fullAncestor(acorn.parse(source), (node, base, state) => {
     if (matchesNode(node, ReactCreateElement)) {
+      // console.log('Base:\n', base, '\nState:\n', state);
       console.log(`There's a ${node.type} node at ${node.start}\n\n`, node, '\n\n');
     }
   });
-};
-
-export const traverseSources = (sources: Sources) => {
-  const scope = {};
-
-  for (const path in sources) {
-    if (sources.hasOwnProperty(path)) {
-      const source = sources[path];
-
-      traverse(scope, path, source);
-    }
-  }
 };

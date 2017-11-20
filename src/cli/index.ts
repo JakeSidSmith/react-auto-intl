@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Arg, collect, Help, Program } from 'jargs';
+import { Arg, collect, Help, KWArg, Program, Required } from 'jargs';
 import { parse } from './parser';
 
 const PROGRAM_NAME = 'react-auto-intl';
@@ -22,10 +22,19 @@ collect(
         ],
         callback: parse,
       },
-      Arg(
-        'pattern',
+      Required(
+        Arg(
+          'main',
+          {
+            description: 'Path to main file to parse',
+          }
+        )
+      ),
+      KWArg(
+        'project',
         {
-          description: 'Glob pattern of files to match',
+          alias: 'p',
+          description: 'Path to typescript project',
         }
       )
     )
